@@ -1,2 +1,2 @@
-# RSP-FE
-Recipe Sharing Platform
+# RRF-FE
+Roommate/Room Rental Finder
