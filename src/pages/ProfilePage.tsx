@@ -24,7 +24,7 @@ export default function ProfilePage() {
 
       <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-2xl font-bold text-blue-600">
+          <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center text-2xl font-bold text-red-800">
             {user.name.charAt(0).toUpperCase()}
           </div>
           <div>
@@ -45,7 +45,7 @@ export default function ProfilePage() {
       <div className="mt-6 flex gap-3">
         <button
           onClick={() => navigate('/post-listing')}
-          className="flex-1 bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 transition"
+          className="flex-1 bg-red-800 text-white py-2.5 rounded-lg font-medium hover:bg-red-900 transition"
         >
           Post a Listing
         </button>

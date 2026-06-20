@@ -22,7 +22,7 @@ export default function ListingCard({ listing }: Props) {
         <span
           className={`absolute top-3 left-3 text-xs font-semibold px-2 py-1 rounded-full ${
             listing.type === 'room'
-              ? 'bg-blue-100 text-blue-700'
+              ? 'bg-red-100 text-red-800'
               : 'bg-green-100 text-green-700'
           }`}
         >
@@ -34,7 +34,7 @@ export default function ListingCard({ listing }: Props) {
         <h3 className="font-semibold text-gray-900 truncate">{listing.title}</h3>
         <p className="text-sm text-gray-500 mt-1 truncate">{listing.location}</p>
         <div className="flex items-center justify-between mt-3">
-          <span className="text-blue-600 font-bold">
+          <span className="text-red-800 font-bold">
             RM{listing.price.toLocaleString()}
             <span className="text-gray-400 font-normal text-sm">/mo</span>
           </span>

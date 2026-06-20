@@ -9,7 +9,7 @@ export default function SearchBar({ onSearch }: Props) {
   const [location, setLocation] = useState('');
   const [type, setType] = useState<SearchFilters['type']>('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSearch({ location, type });
   };
@@ -22,7 +22,7 @@ export default function SearchBar({ onSearch }: Props) {
       <select
         value={type}
         onChange={(e) => setType(e.target.value as SearchFilters['type'])}
-        className="flex-shrink-0 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="flex-shrink-0 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-red-700"
       >
         <option value="">All Types</option>
         <option value="room">Room for Rent</option>
@@ -34,12 +34,12 @@ export default function SearchBar({ onSearch }: Props) {
         placeholder="Search by location..."
         value={location}
         onChange={(e) => setLocation(e.target.value)}
-        className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-red-700"
       />
 
       <button
         type="submit"
-        className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+        className="bg-red-800 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-red-900 transition"
       >
         Search
       </button>

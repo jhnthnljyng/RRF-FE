@@ -84,8 +84,8 @@ export default function PostListingPage() {
                 onClick={() => setForm((p) => ({ ...p, type: t }))}
                 className={`flex-1 py-2.5 rounded-lg border text-sm font-medium transition ${
                   form.type === t
-                    ? 'bg-blue-600 text-white border-blue-600'
-                    : 'border-gray-300 text-gray-700 hover:border-blue-400'
+                    ? 'bg-red-800 text-white border-red-800'
+                    : 'border-gray-300 text-gray-700 hover:border-red-400'
                 }`}
               >
                 {t === 'room' ? 'Room for Rent' : 'Looking for Roommate'}
@@ -103,7 +103,7 @@ export default function PostListingPage() {
             required
             value={form.title}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
             placeholder="e.g. Cozy room near LRT Taman Jaya"
           />
         </div>
@@ -117,7 +117,7 @@ export default function PostListingPage() {
             required
             value={form.location}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
             placeholder="e.g. Petaling Jaya, Selangor"
           />
         </div>
@@ -132,7 +132,7 @@ export default function PostListingPage() {
             min={0}
             value={form.price}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
             placeholder="e.g. 800"
           />
         </div>
@@ -146,7 +146,7 @@ export default function PostListingPage() {
             rows={4}
             value={form.description}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700 resize-none"
             placeholder="Describe the room, house rules, nearby facilities..."
           />
         </div>
@@ -161,7 +161,7 @@ export default function PostListingPage() {
               min={1}
               value={form.bedrooms}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
             />
           </div>
           <div>
@@ -172,7 +172,7 @@ export default function PostListingPage() {
               min={1}
               value={form.bathrooms}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
             />
           </div>
         </div>
@@ -186,7 +186,7 @@ export default function PostListingPage() {
             required
             value={form.availableFrom}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
           />
         </div>
 
@@ -197,7 +197,7 @@ export default function PostListingPage() {
             name="genderPreference"
             value={form.genderPreference}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
           >
             <option value="any">Any</option>
             <option value="male">Male</option>
@@ -212,7 +212,7 @@ export default function PostListingPage() {
             name="isFurnished"
             checked={form.isFurnished}
             onChange={handleChange}
-            className="w-4 h-4 accent-blue-600"
+            className="w-4 h-4 accent-red-800"
           />
           <span className="text-sm text-gray-700">Furnished</span>
         </label>
@@ -228,8 +228,8 @@ export default function PostListingPage() {
                 onClick={() => toggleAmenity(a)}
                 className={`text-sm px-3 py-1.5 rounded-full border transition ${
                   form.amenities.includes(a)
-                    ? 'bg-blue-600 text-white border-blue-600'
-                    : 'border-gray-300 text-gray-700 hover:border-blue-400'
+                    ? 'bg-red-800 text-white border-red-800'
+                    : 'border-gray-300 text-gray-700 hover:border-red-400'
                 }`}
               >
                 {a}
@@ -241,7 +241,7 @@ export default function PostListingPage() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-50"
+          className="w-full bg-red-800 text-white py-3 rounded-lg font-medium hover:bg-red-900 transition disabled:opacity-50"
         >
           {isLoading ? 'Posting...' : 'Post Listing'}
         </button>

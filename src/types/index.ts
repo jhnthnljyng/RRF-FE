@@ -40,7 +40,10 @@ export interface AuthCredentials {
 }
 
 export interface RegisterPayload extends AuthCredentials {
-  name: string;
+  username: string;
+  fullname: string;
+  phone: string;
+  role: 'owner' | 'tenant';
 }
 
 export interface AuthResponse {

@@ -35,7 +35,7 @@ export default function ListingDetailPage() {
     return (
       <div className="text-center py-40">
         <p className="text-red-500 mb-4">{error ?? 'Listing not found.'}</p>
-        <Link to="/listings" className="text-blue-600 underline">Back to listings</Link>
+        <Link to="/listings" className="text-red-800 underline">Back to listings</Link>
       </div>
     );
   }
@@ -45,7 +45,7 @@ export default function ListingDetailPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <Link to="/listings" className="text-sm text-blue-600 hover:underline mb-6 inline-block">
+      <Link to="/listings" className="text-sm text-red-800 hover:underline mb-6 inline-block">
         &larr; Back to listings
       </Link>
 
@@ -64,7 +64,7 @@ export default function ListingDetailPage() {
           <div>
             <span
               className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                l.type === 'room' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
+                l.type === 'room' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-700'
               }`}
             >
               {l.type === 'room' ? 'Room for Rent' : 'Looking for Roommate'}
@@ -92,7 +92,7 @@ export default function ListingDetailPage() {
         {/* Sidebar */}
         <aside className="space-y-4">
           <div className="bg-white border border-gray-200 rounded-2xl p-5">
-            <p className="text-3xl font-bold text-blue-600">
+            <p className="text-3xl font-bold text-red-800">
               RM{l.price.toLocaleString()}
               <span className="text-base font-normal text-gray-400">/mo</span>
             </p>
@@ -118,7 +118,7 @@ export default function ListingDetailPage() {
               </li>
             </ul>
 
-            <button className="mt-5 w-full bg-blue-600 text-white py-2.5 rounded-xl font-medium hover:bg-blue-700 transition">
+            <button className="mt-5 w-full bg-red-800 text-white py-2.5 rounded-xl font-medium hover:bg-red-900 transition">
               Contact Owner
             </button>
           </div>

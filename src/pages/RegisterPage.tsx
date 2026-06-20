@@ -6,30 +6,49 @@ import { useAuthStore } from '../store/authStore';
 export default function RegisterPage() {
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({
+    username: '',
+    fullname: '',
+    email: '',
+    phone: '',
+    role: 'tenant' as 'owner' | 'tenant',
+    password: '',
+    confirmPassword: '',
+  });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
     setError('');
     setIsLoading(true);
     try {
-      const { user, token } = await register(form);
+      const { user, token } = await register({
+        username: form.username,
+        fullname: form.fullname,
+        email: form.email,
+        phone: form.phone,
+        role: form.role,
+        password: form.password,
+      });
       setAuth(user, token);
       navigate('/');
     } catch {
-      setError('Registration failed. Email may already be in use.');
+      setError('Registration failed. Email or username may already be in use.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4">
+    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Create an account</h1>
         <p className="text-gray-500 mb-8">Join RoomFinder and start finding rooms</p>
@@ -42,15 +61,28 @@ export default function RegisterPage() {
           )}
 
           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <input
+              type="text"
+              name="username"
+              required
+              value={form.username}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
+              placeholder="e.g. john_doe"
+            />
+          </div>
+
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
             <input
               type="text"
-              name="name"
+              name="fullname"
               required
-              value={form.name}
+              value={form.fullname}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Your name"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
+              placeholder="Full Name as IC"
             />
           </div>
 
@@ -62,9 +94,51 @@ export default function RegisterPage() {
               required
               value={form.email}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
               placeholder="you@example.com"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <input
+              type="tel"
+              name="phone"
+              required
+              value={form.phone}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, phone: e.target.value.replace(/\D/g, '') }))
+              }
+              inputMode="numeric"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
+              placeholder="e.g. 0123456789"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
+            <div className="flex gap-4">
+              {(['tenant', 'owner'] as const).map((r) => (
+                <label
+                  key={r}
+                  className={`flex items-center gap-2 flex-1 border rounded-lg px-4 py-3 cursor-pointer transition ${
+                    form.role === r
+                      ? 'border-red-800 bg-red-50'
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="role"
+                    value={r}
+                    checked={form.role === r}
+                    onChange={handleChange}
+                    className="accent-red-800"
+                  />
+                  <span className="text-sm font-medium text-gray-700 capitalize">{r}</span>
+                </label>
+              ))}
+            </div>
           </div>
 
           <div>
@@ -76,15 +150,29 @@ export default function RegisterPage() {
               minLength={8}
               value={form.password}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
               placeholder="Min. 8 characters"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              required
+              minLength={8}
+              value={form.confirmPassword}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
+              placeholder="Re-enter your password"
             />
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-50"
+            className="w-full bg-red-800 text-white py-2.5 rounded-lg font-medium hover:bg-red-900 transition disabled:opacity-50"
           >
             {isLoading ? 'Creating account...' : 'Sign up'}
           </button>
@@ -92,7 +180,7 @@ export default function RegisterPage() {
 
         <p className="text-sm text-gray-500 text-center mt-6">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:underline">
+          <Link to="/login" className="text-red-800 hover:underline">
             Log in
           </Link>
         </p>

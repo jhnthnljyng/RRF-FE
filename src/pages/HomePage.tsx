@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { Home, Users, ShieldCheck, MessageCircle, Tag } from 'lucide-react';
 import SearchBar from '../components/common/SearchBar';
 import type { SearchFilters } from '../types';
 
@@ -15,12 +16,12 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-24 px-4">
+      <section className="bg-gradient-to-br from-red-800 to-red-950 text-white py-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Find Your Perfect Room or Roommate
           </h1>
-          <p className="text-blue-100 text-lg mb-10">
+          <p className="text-red-100 text-lg mb-10">
             Browse verified listings across Malaysia. Post for free, connect instantly.
           </p>
           <div className="flex justify-center">
@@ -37,11 +38,11 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <button
             onClick={() => navigate('/listings?type=room')}
-            className="flex flex-col items-center gap-4 p-8 rounded-2xl border-2 border-blue-100 hover:border-blue-400 hover:bg-blue-50 transition group"
+            className="flex flex-col items-center gap-4 p-8 rounded-2xl border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-100 transition group"
           >
-            <span className="text-5xl">🏠</span>
+            <Home size={48} className="text-black" />
             <div>
-              <h3 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600">
+              <h3 className="text-xl font-semibold text-gray-900 group-hover:text-gray-700">
                 Rooms for Rent
               </h3>
               <p className="text-sm text-gray-500 mt-1">
@@ -51,11 +52,11 @@ export default function HomePage() {
           </button>
           <button
             onClick={() => navigate('/listings?type=roommate')}
-            className="flex flex-col items-center gap-4 p-8 rounded-2xl border-2 border-green-100 hover:border-green-400 hover:bg-green-50 transition group"
+            className="flex flex-col items-center gap-4 p-8 rounded-2xl border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-100 transition group"
           >
-            <span className="text-5xl">🤝</span>
+            <Users size={48} className="text-black" />
             <div>
-              <h3 className="text-xl font-semibold text-gray-900 group-hover:text-green-600">
+              <h3 className="text-xl font-semibold text-gray-900 group-hover:text-gray-700">
                 Looking for Roommate
               </h3>
               <p className="text-sm text-gray-500 mt-1">
@@ -74,12 +75,12 @@ export default function HomePage() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
-              { icon: '✅', title: 'Verified Listings', desc: 'All listings are reviewed to keep the platform trustworthy.' },
-              { icon: '💬', title: 'Direct Messaging', desc: 'Contact landlords or tenants directly — no middlemen.' },
-              { icon: '🆓', title: 'Free to Post', desc: 'Post your room or roommate listing at no cost.' },
+              { icon: <ShieldCheck size={36} className="text-black" />, title: 'Verified Listings', desc: 'All listings are reviewed to keep the platform trustworthy.' },
+              { icon: <MessageCircle size={36} className="text-black" />, title: 'Direct Messaging', desc: 'Contact landlords or tenants directly — no middlemen.' },
+              { icon: <Tag size={36} className="text-black" />, title: 'Free to Post', desc: 'Post your room or roommate listing at no cost.' },
             ].map((f) => (
               <div key={f.title} className="bg-white rounded-2xl p-6 shadow-sm">
-                <div className="text-4xl mb-3">{f.icon}</div>
+                <div className="flex justify-center mb-3">{f.icon}</div>
                 <h3 className="font-semibold text-gray-900 mb-1">{f.title}</h3>
                 <p className="text-sm text-gray-500">{f.desc}</p>
               </div>

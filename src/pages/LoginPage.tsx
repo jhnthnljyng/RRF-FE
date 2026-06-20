@@ -13,7 +13,7 @@ export default function LoginPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
@@ -49,7 +49,7 @@ export default function LoginPage() {
               required
               value={form.email}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
               placeholder="you@example.com"
             />
           </div>
@@ -62,7 +62,7 @@ export default function LoginPage() {
               required
               value={form.password}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
               placeholder="••••••••"
             />
           </div>
@@ -70,7 +70,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-50"
+            className="w-full bg-red-800 text-white py-2.5 rounded-lg font-medium hover:bg-red-900 transition disabled:opacity-50"
           >
             {isLoading ? 'Logging in...' : 'Log in'}
           </button>
@@ -78,7 +78,7 @@ export default function LoginPage() {
 
         <p className="text-sm text-gray-500 text-center mt-6">
           Don't have an account?{' '}
-          <Link to="/register" className="text-blue-600 hover:underline">
+          <Link to="/register" className="text-red-800 hover:underline">
             Sign up
           </Link>
         </p>
