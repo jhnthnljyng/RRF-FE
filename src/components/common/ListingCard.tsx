@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import type { Listing } from '../../types';
+import { LISTING_TYPE_LABELS } from '../../types';
 
 interface Props {
   listing: Listing;
@@ -21,12 +22,12 @@ export default function ListingCard({ listing }: Props) {
         />
         <span
           className={`absolute top-3 left-3 text-xs font-semibold px-2 py-1 rounded-full ${
-            listing.type === 'room'
+            listing.type === 'room' || listing.type === 'whole_unit'
               ? 'bg-red-100 text-red-800'
               : 'bg-green-100 text-green-700'
           }`}
         >
-          {listing.type === 'room' ? 'Room for Rent' : 'Looking for Roommate'}
+          {LISTING_TYPE_LABELS[listing.type]}
         </span>
       </div>
 
@@ -38,9 +39,9 @@ export default function ListingCard({ listing }: Props) {
             RM{listing.price.toLocaleString()}
             <span className="text-gray-400 font-normal text-sm">/mo</span>
           </span>
-          {listing.isFurnished !== undefined && (
+          {listing.furnishing && listing.furnishing !== 'unfurnished' && (
             <span className="text-xs text-gray-500">
-              {listing.isFurnished ? 'Furnished' : 'Unfurnished'}
+              {listing.furnishing === 'fully' ? 'Fully Furnished' : 'Partial Furnished'}
             </span>
           )}
         </div>

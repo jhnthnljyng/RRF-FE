@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useListingStore } from '../store/listingStore';
 import { getListing } from '../api/listings';
+import { LISTING_TYPE_LABELS } from '../types';
 
 export default function ListingDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -64,10 +65,12 @@ export default function ListingDetailPage() {
           <div>
             <span
               className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                l.type === 'room' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-700'
+                l.type === 'room' || l.type === 'whole_unit'
+                  ? 'bg-red-100 text-red-800'
+                  : 'bg-green-100 text-green-700'
               }`}
             >
-              {l.type === 'room' ? 'Room for Rent' : 'Looking for Roommate'}
+              {LISTING_TYPE_LABELS[l.type]}
             </span>
             <h1 className="text-2xl font-bold text-gray-900 mt-2">{l.title}</h1>
             <p className="text-gray-500 mt-1">{l.location}</p>
@@ -98,8 +101,10 @@ export default function ListingDetailPage() {
             </p>
 
             <ul className="mt-4 space-y-2 text-sm text-gray-600">
-              {l.isFurnished !== undefined && (
-                <li>Furnishing: <span className="font-medium text-gray-900">{l.isFurnished ? 'Furnished' : 'Unfurnished'}</span></li>
+              {l.furnishing && (
+                <li>Furnishing: <span className="font-medium text-gray-900">
+                  {l.furnishing === 'fully' ? 'Fully Furnished' : l.furnishing === 'partial' ? 'Partial Furnished' : 'Unfurnished'}
+                </span></li>
               )}
               {l.bedrooms !== undefined && (
                 <li>Bedrooms: <span className="font-medium text-gray-900">{l.bedrooms}</span></li>
@@ -125,9 +130,9 @@ export default function ListingDetailPage() {
 
           <div className="bg-white border border-gray-200 rounded-2xl p-5">
             <p className="text-sm font-semibold text-gray-900 mb-1">Posted by</p>
-            <p className="text-gray-700">{l.author.name}</p>
+            <p className="text-gray-700">{l.author?.name ?? `Owner #${l.owner_id}`}</p>
             <p className="text-xs text-gray-400 mt-1">
-              {new Date(l.createdAt).toLocaleDateString()}
+              {new Date(l.createdAt ?? (l as unknown as Record<string,string>).created_at).toLocaleDateString()}
             </p>
           </div>
         </aside>

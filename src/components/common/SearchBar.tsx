@@ -26,7 +26,8 @@ export default function SearchBar({ onSearch }: Props) {
       >
         <option value="">All Types</option>
         <option value="room">Room for Rent</option>
-        <option value="roommate">Looking for Roommate</option>
+        <option value="whole_unit">Whole Unit for Rent</option>
+        <option value="looking_for_roommate">Looking for Roommate</option>
       </select>
 
       <input
