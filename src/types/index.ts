@@ -6,13 +6,30 @@ export const LISTING_TYPE_LABELS: Record<ListingType, string> = {
   looking_for_roommate: 'Looking for Roommate',
 };
 
+export interface Social {
+  name: string;
+  url: string;
+}
+
+export type CookingFrequency = 'never' | 'rarely' | 'sometimes' | 'often' | 'daily';
+
 export interface User {
   id: string;
   name: string;
   email: string;
+  username?: string;
+  phone?: string;
   role: 'owner' | 'tenant';
-  avatar?: string;
+  avatar_url?: string;
   bio?: string;
+  gender?: string;
+  occupation?: string;
+  nationality?: string;
+  cooking_frequency?: CookingFrequency;
+  smoking?: boolean;
+  pet_owner?: boolean;
+  pet_friendly?: boolean;
+  socials?: Social[];
   createdAt: string;
 }
 
@@ -32,6 +49,7 @@ export interface Listing {
   furnishing?: 'fully' | 'partial' | 'unfurnished';
   bedrooms?: number;
   bathrooms?: number;
+  maxOccupants?: number;
   genderPreference?: 'any' | 'male' | 'female';
 }
 

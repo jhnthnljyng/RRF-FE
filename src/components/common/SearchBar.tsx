@@ -1,13 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { SearchFilters } from '../../types';
 
 interface Props {
-  onSearch: (filters: SearchFilters) => void;
+  onSearch: (filters: Pick<SearchFilters, 'type' | 'location'>) => void;
+  initialType?: SearchFilters['type'];
+  initialLocation?: string;
 }
 
-export default function SearchBar({ onSearch }: Props) {
-  const [location, setLocation] = useState('');
-  const [type, setType] = useState<SearchFilters['type']>('');
+export default function SearchBar({ onSearch, initialType = '', initialLocation = '' }: Props) {
+  const [location, setLocation] = useState(initialLocation);
+  const [type, setType] = useState<SearchFilters['type']>(initialType);
+
+  useEffect(() => { setLocation(initialLocation); }, [initialLocation]);
+  useEffect(() => { setType(initialType ?? ''); }, [initialType]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

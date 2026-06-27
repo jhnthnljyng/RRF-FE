@@ -51,7 +51,7 @@ export default function HomePage() {
             </div>
           </button>
           <button
-            onClick={() => navigate('/listings?type=roommate')}
+            onClick={() => navigate('/listings?type=looking_for_roommate')}
             className="flex flex-col items-center gap-4 p-8 rounded-2xl border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-100 transition group"
           >
             <Users size={48} className="text-black" />

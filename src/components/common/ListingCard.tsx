@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Listing } from '../../types';
 import { LISTING_TYPE_LABELS } from '../../types';
 
@@ -6,8 +8,31 @@ interface Props {
   listing: Listing;
 }
 
+const API_BASE = (import.meta.env.VITE_API_URL as string || 'http://localhost:8000/api')
+  .replace(/\/api$/, '');
+
+function resolveImage(path: string | undefined): string {
+  if (!path) return 'https://placehold.co/400x240?text=No+Image';
+  if (path.startsWith('http')) return path;
+  return `${API_BASE}/${path.replace(/^\//, '')}`;
+}
+
 export default function ListingCard({ listing }: Props) {
-  const placeholder = 'https://placehold.co/400x240?text=No+Image';
+  const [index, setIndex] = useState(0);
+  const images = listing.images.length > 0 ? listing.images : [undefined];
+  const total = images.length;
+
+  const prev = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIndex((i) => (i - 1 + total) % total);
+  };
+
+  const next = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIndex((i) => (i + 1) % total);
+  };
 
   return (
     <Link
@@ -16,10 +41,37 @@ export default function ListingCard({ listing }: Props) {
     >
       <div className="relative h-48 bg-gray-100 overflow-hidden">
         <img
-          src={listing.images[0] ?? placeholder}
+          src={resolveImage(images[index])}
           alt={listing.title}
           className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
         />
+
+        {total > 1 && (
+          <>
+            <button
+              onClick={prev}
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-1 transition"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <button
+              onClick={next}
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-1 transition"
+            >
+              <ChevronRight size={16} />
+            </button>
+
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+              {images.map((_, i) => (
+                <span
+                  key={i}
+                  className={`block w-1.5 h-1.5 rounded-full transition ${i === index ? 'bg-white' : 'bg-white/50'}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
         <span
           className={`absolute top-3 left-3 text-xs font-semibold px-2 py-1 rounded-full ${
             listing.type === 'room' || listing.type === 'whole_unit'

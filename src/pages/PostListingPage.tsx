@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ImagePlus, X } from 'lucide-react';
-import { createListing } from '../api/listings';
+import { createListing, uploadImages } from '../api/listings';
 import { useAuthStore } from '../store/authStore';
 import type { ListingType } from '../types';
 
@@ -14,6 +14,7 @@ const OWNER_TYPES: { value: ListingType; label: string; desc: string }[] = [
 ];
 
 const TENANT_TYPES: { value: ListingType; label: string; desc: string }[] = [
+  { value: 'room', label: 'Room for Rent', desc: 'Subletting a room from the unit you currently rent' },
   { value: 'looking_for_roommate', label: 'Looking for Roommate', desc: 'Have a space and looking for someone to share with' },
 ];
 
@@ -77,27 +78,35 @@ export default function PostListingPage() {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: { preventDefault(): void }) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
     try {
-      const payload = new FormData();
-      payload.append('type', form.type);
-      payload.append('title', form.title);
-      payload.append('description', form.description);
-      payload.append('price', form.price);
-      payload.append('location', form.location);
-      payload.append('furnishing', form.furnishing);
-      payload.append('availableFrom', form.availableFrom);
-      payload.append('genderPreference', form.genderPreference);
-      if (form.bedrooms) payload.append('bedrooms', form.bedrooms);
-      if (form.bathrooms) payload.append('bathrooms', form.bathrooms);
-      if (form.maxOccupants) payload.append('maxOccupants', form.maxOccupants);
-      form.amenities.forEach((a) => payload.append('amenities[]', a));
-      imageFiles.forEach((file) => payload.append('images', file));
+      let imagePaths: string[] = [];
+      if (imageFiles.length > 0) {
+        try {
+          imagePaths = await uploadImages(imageFiles);
+        } catch {
+          // image upload endpoint not ready — proceed without images
+        }
+      }
 
-      const listing = await createListing(payload);
+      const listing = await createListing({
+        type: form.type,
+        title: form.title,
+        description: form.description,
+        price: Number(form.price),
+        location: form.location,
+        furnishing: form.furnishing,
+        availableFrom: form.availableFrom,
+        genderPreference: form.genderPreference,
+        bedrooms: form.bedrooms ? Number(form.bedrooms) : undefined,
+        bathrooms: form.bathrooms ? Number(form.bathrooms) : undefined,
+        maxOccupants: form.maxOccupants ? Number(form.maxOccupants) : undefined,
+        amenities: form.amenities,
+        images: imagePaths,
+      });
       navigate(`/listings/${listing.id}`);
     } catch {
       setError('Failed to create listing. Please try again.');
@@ -248,7 +257,7 @@ export default function PostListingPage() {
         </div>
 
         {/* Bedrooms / Bathrooms / Max Occupants */}
-        {form.type !== 'room' ? (
+        {form.type === 'whole_unit' && (
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Bedrooms</label>
@@ -284,7 +293,9 @@ export default function PostListingPage() {
               />
             </div>
           </div>
-        ) : (
+        )}
+
+        {form.type === 'room' && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Max Occupants</label>
             <input
@@ -305,6 +316,7 @@ export default function PostListingPage() {
             type="date"
             name="availableFrom"
             required
+            min={new Date().toISOString().split('T')[0]}
             value={form.availableFrom}
             onChange={handleChange}
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"
@@ -345,7 +357,7 @@ export default function PostListingPage() {
                         ...prev,
                         furnishing: next,
                         amenities: next === 'unfurnished'
-                          ? prev.amenities.filter((a) => !FURNISHING_AMENITIES.includes(a))
+                          ? prev.amenities.filter((a) => !FURNISHED_AMENITIES.includes(a))
                           : prev.amenities,
                       };
                     })

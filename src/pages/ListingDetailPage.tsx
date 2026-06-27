@@ -1,11 +1,22 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useListingStore } from '../store/listingStore';
 import { getListing } from '../api/listings';
 import { LISTING_TYPE_LABELS } from '../types';
 
+const API_BASE = (import.meta.env.VITE_API_URL as string || 'http://localhost:8000/api')
+  .replace(/\/api$/, '');
+
+function resolveImage(path: string | undefined): string {
+  if (!path) return 'https://placehold.co/800x480?text=No+Image';
+  if (path.startsWith('http')) return path;
+  return `${API_BASE}/${path.replace(/^\//, '')}`;
+}
+
 export default function ListingDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const [imgIndex, setImgIndex] = useState(0);
   const { selectedListing, isLoading, error, setSelectedListing, setLoading, setError } =
     useListingStore();
 
@@ -17,6 +28,7 @@ export default function ListingDetailPage() {
       try {
         const data = await getListing(id);
         setSelectedListing(data);
+        setImgIndex(0);
       } catch {
         setError('Listing not found or failed to load.');
       } finally {
@@ -42,7 +54,11 @@ export default function ListingDetailPage() {
   }
 
   const l = selectedListing;
-  const placeholder = 'https://placehold.co/800x480?text=No+Image';
+  const images = l.images.length > 0 ? l.images : [undefined];
+  const total = images.length;
+
+  const prevImg = () => setImgIndex((i) => (i - 1 + total) % total);
+  const nextImg = () => setImgIndex((i) => (i + 1) % total);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -50,14 +66,62 @@ export default function ListingDetailPage() {
         &larr; Back to listings
       </Link>
 
-      {/* Images */}
-      <div className="rounded-2xl overflow-hidden bg-gray-100 mb-8 h-72 sm:h-96">
+      {/* Image carousel */}
+      <div className="relative rounded-2xl overflow-hidden bg-gray-100 mb-8 h-72 sm:h-96">
         <img
-          src={l.images[0] ?? placeholder}
+          src={resolveImage(images[imgIndex])}
           alt={l.title}
           className="w-full h-full object-cover"
         />
+
+        {total > 1 && (
+          <>
+            <button
+              onClick={prevImg}
+              className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-2 transition"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              onClick={nextImg}
+              className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white rounded-full p-2 transition"
+            >
+              <ChevronRight size={20} />
+            </button>
+
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+              {images.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setImgIndex(i)}
+                  className={`w-2 h-2 rounded-full transition ${i === imgIndex ? 'bg-white' : 'bg-white/50 hover:bg-white/75'}`}
+                />
+              ))}
+            </div>
+
+            <span className="absolute top-3 right-3 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+              {imgIndex + 1} / {total}
+            </span>
+          </>
+        )}
       </div>
+
+      {/* Thumbnail strip */}
+      {total > 1 && (
+        <div className="flex gap-2 mb-8 overflow-x-auto pb-1">
+          {images.map((img, i) => (
+            <button
+              key={i}
+              onClick={() => setImgIndex(i)}
+              className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition ${
+                i === imgIndex ? 'border-red-800' : 'border-transparent opacity-60 hover:opacity-100'
+              }`}
+            >
+              <img src={resolveImage(img)} alt="" className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main info */}
