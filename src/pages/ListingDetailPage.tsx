@@ -1,12 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
 import { useListingStore } from '../store/listingStore';
 import { getListing } from '../api/listings';
 import { LISTING_TYPE_LABELS } from '../types';
 
 const API_BASE = (import.meta.env.VITE_API_URL as string || 'http://localhost:8000/api')
   .replace(/\/api$/, '');
+
+function formatWhatsAppNumber(phone: string | undefined): string | null {
+  if (!phone) return null;
+  const digits = phone.replace(/\D/g, '');
+  if (digits.startsWith('60')) return digits;
+  if (digits.startsWith('0')) return '6' + digits;
+  return '60' + digits;
+}
 
 function resolveImage(path: string | undefined): string {
   if (!path) return 'https://placehold.co/800x480?text=No+Image';
@@ -187,18 +195,44 @@ export default function ListingDetailPage() {
               </li>
             </ul>
 
-            <button className="mt-5 w-full bg-red-800 text-white py-2.5 rounded-xl font-medium hover:bg-red-900 transition">
-              Contact Owner
-            </button>
+            {(() => {
+              const number = formatWhatsAppNumber(l.owner_phone ?? l.author?.phone);
+              const url = number
+                ? `https://wa.me/${number}?text=${encodeURIComponent(`Hi, I'm interested in your listing "${l.title}" on RoomFinder.`)}`
+                : null;
+              return url ? (
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 w-full bg-green-600 hover:bg-green-700 text-white py-2.5 rounded-xl font-medium transition flex items-center justify-center gap-2"
+                >
+                  <MessageCircle size={18} />
+                  Contact on WhatsApp
+                </a>
+              ) : (
+                <button
+                  disabled
+                  className="mt-5 w-full bg-gray-100 text-gray-400 py-2.5 rounded-xl font-medium cursor-not-allowed"
+                >
+                  Contact info not available
+                </button>
+              );
+            })()}
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-2xl p-5">
+          <Link
+            to={`/users/${l.owner_id}`}
+            className="block bg-white border border-gray-200 rounded-2xl p-5 hover:border-red-200 hover:shadow-sm transition group"
+          >
             <p className="text-sm font-semibold text-gray-900 mb-1">Posted by</p>
-            <p className="text-gray-700">{l.author?.name ?? `Owner #${l.owner_id}`}</p>
+            <p className="text-gray-700 font-medium group-hover:text-red-800 transition">
+              {l.owner_name ?? l.author?.name ?? `Owner #${l.owner_id}`}
+            </p>
             <p className="text-xs text-gray-400 mt-1">
               {new Date(l.createdAt ?? (l as unknown as Record<string,string>).created_at).toLocaleDateString()}
             </p>
-          </div>
+          </Link>
         </aside>
       </div>
     </div>

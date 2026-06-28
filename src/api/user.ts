@@ -90,3 +90,20 @@ export const changePassword = (data: {
   new_password: string;
   new_password_confirmation: string;
 }) => api.put('/user/password', data);
+
+export const getPublicProfile = (id: string): Promise<User> =>
+  api.get<unknown>(`/users/${id}`).then((r) => {
+    const raw = extractUser(r.data);
+    if (!raw) throw new Error('User not found');
+    return mapUser(raw);
+  });
+
+export const searchTenants = (query: string): Promise<User[]> =>
+  api.get<unknown>('/users/search', { params: { q: query } }).then((r) => {
+    const data = r.data;
+    if (Array.isArray(data)) return data as User[];
+    const d = data as Record<string, unknown>;
+    if (Array.isArray(d.users)) return d.users as User[];
+    if (Array.isArray(d.data)) return d.data as User[];
+    return [];
+  });

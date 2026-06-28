@@ -43,6 +43,8 @@ export interface Listing {
   images: string[];
   amenities: string[];
   owner_id: number;
+  owner_name?: string;
+  owner_phone?: string;
   author?: User;
   createdAt: string;
   availableFrom: string;
@@ -51,6 +53,10 @@ export interface Listing {
   bathrooms?: number;
   maxOccupants?: number;
   genderPreference?: 'any' | 'male' | 'female';
+  status?: 'available' | 'filled' | 'unavailable';
+  tenant_id?: number | null;
+  is_active?: boolean | number;
+  is_favourited?: boolean;
 }
 
 export interface SearchFilters {
@@ -60,6 +66,9 @@ export interface SearchFilters {
   maxPrice?: number;
   furnishing?: 'fully' | 'partial' | 'unfurnished';
   genderPreference?: string;
+  minBedrooms?: number;
+  minBathrooms?: number;
+  availableOnly?: boolean;
 }
 
 export interface AuthCredentials {

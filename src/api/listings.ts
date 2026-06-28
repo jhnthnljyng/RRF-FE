@@ -2,8 +2,13 @@ import api from './axios';
 import type { Listing, SearchFilters } from '../types';
 
 export const getListings = (filters?: SearchFilters) =>
-  api.get<{ listings: Listing[]; total: number }>('/listings', { params: filters })
-    .then((r) => r.data.listings);
+  api.get<unknown>('/listings', { params: filters }).then((r) => {
+    const data = r.data as Record<string, unknown>;
+    if (Array.isArray(data)) return data as Listing[];
+    if (Array.isArray(data.listings)) return data.listings as Listing[];
+    if (Array.isArray(data.data)) return data.data as Listing[];
+    return [] as Listing[];
+  });
 
 export const getListing = (id: string) =>
   api.get<Listing | { listing: Listing }>(`/listings/${id}`).then((r) => {
@@ -29,4 +34,16 @@ export const deleteListing = (id: string) =>
   api.delete(`/listings/${id}`);
 
 export const getMyListings = () =>
-  api.get<Listing[]>('/listings/me').then((r) => r.data);
+  api.get<unknown>('/listings/me').then((r) => {
+    const data = r.data as Record<string, unknown>;
+    if (Array.isArray(data)) return data as Listing[];
+    if (Array.isArray(data.listings)) return data.listings as Listing[];
+    if (Array.isArray(data.data)) return data.data as Listing[];
+    return [] as Listing[];
+  });
+
+export const updateListingStatus = (id: string, status: string, tenantId?: number) =>
+  api.put(`/listings/${id}/status`, {
+    status,
+    ...(tenantId !== undefined ? { tenant_id: tenantId } : {}),
+  });

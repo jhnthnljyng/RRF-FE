@@ -1,12 +1,12 @@
 import { useRef, useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { UserRound, KeyRound, Settings, LogOut, ChevronDown } from 'lucide-react';
+import { UserRound, KeyRound, Settings, LogOut, ChevronDown, LayoutList, Heart } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 
 const API_BASE = (import.meta.env.VITE_API_URL as string || 'http://localhost:8000/api')
   .replace(/\/api$/, '');
 
-function resolveAvatar(path: string | undefined, fallback: string): string {
+function resolveAvatar(path: string | undefined): string {
   if (!path) return '';
   if (path.startsWith('http')) return path;
   return `${API_BASE}/${path.replace(/^\//, '')}`;
@@ -39,7 +39,7 @@ export default function Navbar() {
     navigate(path);
   };
 
-  const avatarSrc = user?.avatar_url ? resolveAvatar(user.avatar_url, '') : '';
+  const avatarSrc = user?.avatar_url ? resolveAvatar(user.avatar_url) : '';
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -105,6 +105,20 @@ export default function Navbar() {
                     >
                       <UserRound size={15} className="text-gray-400" />
                       Profile
+                    </button>
+                    <button
+                      onClick={() => go('/my-listings')}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition"
+                    >
+                      <LayoutList size={15} className="text-gray-400" />
+                      My Listings
+                    </button>
+                    <button
+                      onClick={() => go('/favourites')}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition"
+                    >
+                      <Heart size={15} className="text-gray-400" />
+                      Favourites
                     </button>
                     <button
                       onClick={() => go('/change-password')}

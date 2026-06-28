@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Heart } from 'lucide-react';
 import type { Listing } from '../../types';
 import { LISTING_TYPE_LABELS } from '../../types';
+import { useAuthStore } from '../../store/authStore';
+import { addFavourite, removeFavourite } from '../../api/favourites';
 
 interface Props {
   listing: Listing;
@@ -19,6 +21,10 @@ function resolveImage(path: string | undefined): string {
 
 export default function ListingCard({ listing }: Props) {
   const [index, setIndex] = useState(0);
+  const [isFav, setIsFav] = useState(listing.is_favourited ?? false);
+  const [favLoading, setFavLoading] = useState(false);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
   const images = listing.images.length > 0 ? listing.images : [undefined];
   const total = images.length;
 
@@ -32,6 +38,26 @@ export default function ListingCard({ listing }: Props) {
     e.preventDefault();
     e.stopPropagation();
     setIndex((i) => (i + 1) % total);
+  };
+
+  const toggleFav = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (favLoading) return;
+    setFavLoading(true);
+    const prev = isFav;
+    setIsFav(!isFav);
+    try {
+      if (prev) {
+        await removeFavourite(listing.id);
+      } else {
+        await addFavourite(listing.id);
+      }
+    } catch {
+      setIsFav(prev);
+    } finally {
+      setFavLoading(false);
+    }
   };
 
   return (
@@ -81,6 +107,19 @@ export default function ListingCard({ listing }: Props) {
         >
           {LISTING_TYPE_LABELS[listing.type]}
         </span>
+
+        {isAuthenticated && (
+          <button
+            onClick={toggleFav}
+            disabled={favLoading}
+            className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 hover:bg-white rounded-full shadow transition disabled:opacity-50"
+          >
+            <Heart
+              size={16}
+              className={isFav ? 'text-red-600 fill-red-600' : 'text-gray-500'}
+            />
+          </button>
+        )}
       </div>
 
       <div className="p-4">
